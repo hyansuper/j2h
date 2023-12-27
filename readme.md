@@ -10,8 +10,10 @@ template(); // conver json data to DOM string.
 ```
 
 `<>` is a special keyword whoes value will be the tag of HTML element.
+
 `html` means 'innerHTML', also a special keyword for nested elements.
-the other special keywords are `[]` and `{}` as illustrated below.
+
+The other special keywords are `[]` and `{}` as illustrated below.
 
 
 ## Render data
@@ -37,10 +39,10 @@ j2h({'<>':'a', href:_0, html:_1}).(['www.baidu.com','百度'])
  `_i` and `_val` for index and value of the array.
 ```javascript
 j2h(
-		{
-			'<>': 'select',
-			html: j2h({'<>':'option', value:_i, html:_val}).batch // this is a callback function
-		}
+    {
+        '<>': 'select',
+        html: j2h({'<>':'option', value:_i, html:_val}).batch // this is a callback function
+    }
 	
 )(['English','中文'])
 ```
