@@ -1,49 +1,82 @@
 # j2h
+
 j2h renders json to html. It's similar to [json2html](https://json2html.com/), but a lot simpler, and doesn't require jQuery, and hopefully more intuitive and flexible.
 
 ## Basic
 
 ```javascript
-var json = {'<>':'div',html:['this is', {'<>':'em', html:'important'}]};
+var json = {
+    '<>': 'div',
+    html: [
+              'this is ', 
+              {'<>':'b', html:'important'}
+          ]
+};
 var template = j2h(json); // template is a function itself
-template(); // conver json data to DOM string.
+template(); // when called it converts the json obj to DOM string.
 ```
 
-`<>` is a special keyword whoes value will be the tag of HTML element.
+In the json obj, `<>` is a special key whose value will be the tag of HTML element, `html` means 'innerHTML', also a special key for nested elements.
 
-`html` means 'innerHTML', also a special keyword for nested elements.
-
-The other special keywords are `[]` and `{}` as illustrated below.
+The other special keys are `[]` and `{}` as illustrated below.
 
 
 ## Render data
 
-Values in the json object can be callback functions for rendering corresponding fields of data.
+To fill data in DOM string, replace values in the json obj with callback functions.
 
-```javascript
-var template = j2h({'<>':'p', class:d=>d.cls, html:d=>d.words);
-var data = {cls:'red', words:'this is a paragraph.'};
+```js
+var template = j2h({'<>':'p', style:d=>`background:${d.color}`, html:d=>d.words});
+var data = {color:'red', words:'this is a paragraph.'};
 template(data);
 
-// or render a batch of data
-template.batch([{cls:'red', words:'paragraph one'},{cls:'green', words:'paragraph two'}]);
+// or render an array of data
+template.batch([{color:'red', words:'paragraph one'},
+                {color:'green', words:'paragraph two'}]);
+```
+
+`arr2tab(header, array)` is a helper function for converting array to a table (a list of obj with same fields).
+
+```js
+arr2tab('color/words', 
+      [['red','paragraph one'], 
+      ['green', 'paragraph two']]);
 ```
 
 ## A few handy callback functions
 
-When data is an array, `_0` can be use for getting first element of data, also available are `_1`, `_2`, `_3`.
-```javascript
-j2h({'<>':'a', href:_0, html:_1}).(['www.baidu.com','百度'])
+`_0` is predefined to be data=>data[0], also available are `_1`, `_2`, `_3`.
+
+```js
+var template = j2h({'<>':'a', html:_0, href:_1});
+template(['百度', 'www.baidu.com']);
 ```
 
- `_i` and `_val` for index and value of the array.
-```javascript
-j2h(
-    {
-        '<>': 'select',
-        html: j2h({'<>':'option', value:_i, html:_val}).batch // this is a callback function
-    }
-	
-)(['English','中文'])
+ `_i` and `_val` are for index and value of the array.
+
+```js
+var option_template = j2h({'<>':'option', value:_i, html:_val}).batch;
+var select_template = j2h({'<>':'select', html: option_template}); // option_template as a callback funcion
+select_template(['English','中文']);
 ```
+
 ## `{}` and `[]`
+
+By default, callback functions act on the original data, but `{}` can alter the data.
+
+`[]` alters the data before it's rendered by inner html template.
+
+```js
+var template = j2h({'{}':d=>d.form,
+                    '<>':'form', method:f=>f.method, action:f=>f.url,
+
+                    '[]': d=>d.inputs,
+                    html: j2h([{'<>':'label', html:_txt}, {'<>':'input', type:i=>i.type}, '<br>']).batch
+                });
+
+template({form: {method:'post', url:'/submit.php'},
+         inputs: arr2tab('text/type', 
+                        [['quantity', 'number'], 
+                        ['color', 'color'], 
+                        ['urgent', 'checkbox']])});
+```
