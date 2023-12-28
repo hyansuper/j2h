@@ -1,6 +1,6 @@
 # j2h
 
-j2h renders json to html. It's similar to [json2html](https://json2html.com/), but a lot simpler, and doesn't require jQuery, and hopefully more intuitive and flexible.
+j2h converts js object/arrary to html string. It's similar to [json2html](https://json2html.com/), but a lot simpler, and doesn't require jQuery, and hopefully more intuitive and flexible.
 
 ## Basic
 
