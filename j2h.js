@@ -11,7 +11,8 @@
 			var ndata=get(tmpl,'{}',o=>o)(data); // new data
 			var idata=get(tmpl,'[]',o=>ndata)(data); // inner data for inner html
 			var html=get(tmpl,'html','');
-			var tag=if_fn(get(tmpl,'<>','div'),ndata);
+			var tag=if_fn(get(tmpl,'<>',''),ndata);
+			if(tag==='') return j2h_fn(html,idata);
 			var attr_list=Object.entries(tmpl).filter(([k,v])=>!special_prop.includes(k)).map(([k,v])=>{v=if_fn(v,ndata,index);return binary_attr.includes(k)?(v?k:''):`${k}='${v}'`}).join(' ');
 			return '<' + tag + (attr_list.length? (' '+attr_list): '') + (no_tail_el.includes(tag)? '/>': `>${j2h_fn(html,idata,index)}</${tag}>`);
 		}
