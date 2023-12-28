@@ -45,7 +45,7 @@ arr2tab('color/words',
 
 ## A few handy callback functions
 
-`_0` is predefined to be data=>data[0], also available are `_1`, `_2`, `_3`.
+`_0` is predefined to be data=>data[0], also available are `_1`, `_2`, `_3`, `_id`, and `_txt` for data=>data.text
 
 ```js
 var template = j2h({'<>':'a', html:_0, href:_1});
